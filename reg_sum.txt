@@ -1,0 +1,25 @@
+                            OLS Regression Results                            
+==============================================================================
+Dep. Variable:         Velocity (m/s)   R-squared:                       0.028
+Model:                            OLS   Adj. R-squared:                 -0.060
+Method:                 Least Squares   F-statistic:                    0.3224
+Date:                Wed, 16 Sep 2026   Prob (F-statistic):              0.582
+Time:                        14:59:03   Log-Likelihood:                 26.509
+No. Observations:                  13   AIC:                            -49.02
+Df Residuals:                      11   BIC:                            -47.89
+Df Model:                           1                                         
+Covariance Type:            nonrobust                                         
+========================================================================================
+                           coef    std err          t      P>|t|      [0.025      0.975]
+----------------------------------------------------------------------------------------
+Intercept (v0)           0.0999      0.018      5.567      0.000       0.060       0.139
+Acceleration (m^2/s)     0.1729      0.305      0.568      0.582      -0.497       0.843
+==============================================================================
+Omnibus:                        3.478   Durbin-Watson:                   1.805
+Prob(Omnibus):                  0.176   Jarque-Bera (JB):                1.526
+Skew:                          -0.826   Prob(JB):                        0.466
+Kurtosis:                       3.303   Cond. No.                         32.2
+==============================================================================
+
+Notes:
+[1] Standard Errors assume that the covariance matrix of the errors is correctly specified.
