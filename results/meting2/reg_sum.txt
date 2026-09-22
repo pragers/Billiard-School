@@ -3,8 +3,8 @@
 Dep. Variable:                      X   R-squared:                       0.997
 Model:                            OLS   Adj. R-squared:                  0.997
 Method:                 Least Squares   F-statistic:                     4334.
-Date:                Wed, 16 Sep 2026   Prob (F-statistic):           1.00e-16
-Time:                        15:36:33   Log-Likelihood:                 16.581
+Date:                Tue, 22 Sep 2026   Prob (F-statistic):           1.00e-16
+Time:                        20:54:37   Log-Likelihood:                 16.581
 No. Observations:                  14   AIC:                            -29.16
 Df Residuals:                      12   BIC:                            -27.88
 Df Model:                           1                                         
@@ -12,7 +12,7 @@ Covariance Type:            nonrobust
 ===================================================================================
                       coef    std err          t      P>|t|      [0.025      0.975]
 -----------------------------------------------------------------------------------
-Intercept (x0)     19.5883      0.041    483.113      0.000      19.500      19.677
+Intercept (x0)     19.2393      0.045    426.236      0.000      19.141      19.338
 velocity (cm/s)   139.6026      2.120     65.836      0.000     134.983     144.223
 ==============================================================================
 Omnibus:                        0.474   Durbin-Watson:                   1.130

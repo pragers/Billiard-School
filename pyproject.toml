@@ -12,6 +12,7 @@ dependencies = [
     "numpy>=2.5.3",
     "polars>=1.44.2",
     "statsmodels>=0.15.0",
+    "sympy>=1.14.0",
 ]
 [tool.uv]
 config-settings = { editable_mode = "compat" }
