@@ -23,8 +23,8 @@ def main() -> None:
         os.makedirs(output_folder, exist_ok=True)
 
         frame_rate = 1200 # in Hz
-        frames_skipped = 4
-        shutter_speed = 33e-6 #1/1250 # in s
+        frames_skipped = 5
+        shutter_speed =  1/1250 #33e-6 # in s
         delim = "\t"
         if "csv" in name_split[1]:
             delim = ","
