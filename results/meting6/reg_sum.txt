@@ -1,24 +1,24 @@
                             OLS Regression Results                            
 ==============================================================================
 Dep. Variable:                      X   R-squared:                       0.998
-Model:                            OLS   Adj. R-squared:                  0.998
-Method:                 Least Squares   F-statistic:                     4061.
-Date:                Wed, 16 Sep 2026   Prob (F-statistic):           4.09e-12
-Time:                        15:36:33   Log-Likelihood:                -5.8344
-No. Observations:                  10   AIC:                             15.67
-Df Residuals:                       8   BIC:                             16.27
+Model:                            OLS   Adj. R-squared:                  0.997
+Method:                 Least Squares   F-statistic:                     2162.
+Date:                Wed, 23 Sep 2026   Prob (F-statistic):           8.69e-08
+Time:                        14:43:02   Log-Likelihood:                -1.8628
+No. Observations:                   7   AIC:                             7.726
+Df Residuals:                       5   BIC:                             7.617
 Df Model:                           1                                         
 Covariance Type:            nonrobust                                         
-===================================================================================
-                      coef    std err          t      P>|t|      [0.025      0.975]
------------------------------------------------------------------------------------
-Intercept (x0)    260.4267      0.285    913.873      0.000     259.770     261.084
-velocity (cm/s)  1360.7297     21.352     63.729      0.000    1311.492    1409.967
+==================================================================================
+                     coef    std err          t      P>|t|      [0.025      0.975]
+----------------------------------------------------------------------------------
+Intercept (x0)   257.9557      0.514    501.866      0.000     256.634     259.277
+velocity (m/s)  1313.0857     28.241     46.496      0.000    1240.490    1385.681
 ==============================================================================
-Omnibus:                        2.390   Durbin-Watson:                   2.042
-Prob(Omnibus):                  0.303   Jarque-Bera (JB):                0.265
-Skew:                           0.213   Prob(JB):                        0.876
-Kurtosis:                       3.674   Cond. No.                         139.
+Omnibus:                          nan   Durbin-Watson:                   1.797
+Prob(Omnibus):                    nan   Jarque-Bera (JB):                0.591
+Skew:                           0.287   Prob(JB):                        0.744
+Kurtosis:                       1.697   Cond. No.                         200.
 ==============================================================================
 
 Notes:

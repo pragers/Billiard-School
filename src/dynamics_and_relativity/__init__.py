@@ -10,34 +10,49 @@ from dynamics_and_relativity.err_prop import Formula
 
 def main() -> None:
     #loop through all 10 measurements
-    for i in range(2,3):
+
+    for i in os.scandir("/Users/jmeij/Downloads/OneDrive_1_9-23-2026-2"):
+        if not i.is_file or i.name == ".DS_Store":
+            continue
+        print(i.path)
         # get data
-        data_file =f"/Users/jmeij/Downloads/OneDrive_1_9-16-2026/Results meting {i}.csv"
-        output_folder = f"./results/meting{i}/"
+        data_file = i.path
+        name_split = os.path.splitext(i.name)
+        name = name_split[0]
+        output_folder = f"./results week 2/meting {name}/"
         #distance = float(input("Totale afstand(cm):"))
         os.makedirs(output_folder, exist_ok=True)
 
-        frame_rate = 400
-        raw_data= pl.read_csv(data_file, has_header=True, separator=",", row_index_name= "frame")
+        frame_rate = 400 # in Hz
+        frames_skipped = 4
+        shutter_speed = 33e-6 #1/1250 # in s
+        x_uncert = 0.0005 #in m
+        delim = "\t"
+        if "csv" in name_split[1]:
+            delim = ","
+        raw_data= pl.read_csv(data_file, has_header=True, separator=delim, row_index_name= "frame")
         data= raw_data.select(["frame","X","Y"])
-        formula = Formula("sqrt(x_change**2 + y_change**2) / frametime",vars = ["x_change","y_change"], consts={"frametime":1/frame_rate})
-
-        #data = pl.read_csv(data_file, has_header= False,separator="\t", schema= {"x": pl.Float64, "y":pl.Float64}, row_index_name="frame")
-        pixel_distance = ((data.get_column("X").item(0) - data.get_column("X").item(-1))**2 +(data.get_column("Y").item(0) - data.get_column("Y").item(-1))**2)**0.5
+        formula = Formula("x_change / time_change",vars = ["x_change","time_change"], consts={})
 
         #insert columns
         data.insert_column(1, ((pl.col("frame"))/frame_rate).alias("time"))
-        data.insert_column(data.shape[1],(pl.col("X").diff()).alias("x_change"))
-        data.insert_column(data.shape[1],(pl.col("Y").diff()).alias("y_change"))
-        data.insert_column(data.shape[1],(np.sqrt(pl.col("x_change")**2 +pl.col("y_change")**2)*frame_rate).alias("velocity(cm/s)"))
-        data.insert_column(data.shape[1],(pl.col("velocity(cm/s)")/100).alias("velocity(m/s)"))
-        data.insert_column(data.shape[1], pl.lit(0.1).alias("delta_x_change"))
-        data.insert_column(data.shape[1], pl.lit(0.1).alias("delta_y_change"))
+        data.insert_column(data.shape[1],(pl.col("X").diff(n=1)/100).alias("x_change_s"))
+        data.insert_column(data.shape[1],(pl.col("X").diff(n=frames_skipped)/100).alias("x_change"))
+        data.insert_column(data.shape[1],(pl.col("Y").diff(n=frames_skipped)).alias("y_change"))
+        data.insert_column(data.shape[1],(pl.col("x_change")*frame_rate/frames_skipped).alias("velocity(m/s)"))
+        data.insert_column(data.shape[1], pl.lit((((data["x_change_s"]-data["x_change_s"].mean())**2).sum()/data.shape[0])**0.5).alias("delta_x_change"))
+        data.insert_column(data.shape[1], pl.lit(1/frame_rate*frames_skipped).alias("time_change")) ## time between frames
+        data.insert_column(data.shape[1], pl.lit(shutter_speed).alias("delta_time_change")) ##shutter speed
         err_formula = formula.get_error_expr()
-        print(data)
-        print(err_formula)
-        print(err_formula.evaluate_polars(data.drop_nans().drop_nulls()).alias("velocity"))
-
+        clean = data.drop_nans().drop_nulls()
+        evaluated= clean.with_columns(err_formula.evaluate_polars(clean).alias("err_v"))
+        result = data.join(
+            evaluated.select(["frame", "err_v"]),
+            on="frame",
+            how="left",
+        )
+        data = result
+        data = data.filter(~pl.Series(range(len(data))).is_in([0,1]))
         # create linear fit with velocity as dependency of time.
         data = data.drop_nulls()
         time = data["time"].to_numpy()
@@ -48,7 +63,7 @@ def main() -> None:
 
         # save model summary to file.
         summary = model.summary(
-            xname=["Intercept (x0)", "velocity (cm/s)"],
+            xname=["Intercept (x0)", "velocity (m/s)"],
             yname="X"
         )
         with open(output_folder+"reg_sum.txt", "w") as f:
@@ -57,7 +72,7 @@ def main() -> None:
         time = data["time"].to_numpy()
         vel  = data["velocity(m/s)"].to_numpy()
         Time = sm.add_constant(time)
-        model = sm.OLS(vel, Time).fit()
+        model = sm.WLS(vel, Time,weights=data["err_v"].to_numpy()).fit()
 
 
         # save model summary to file.
@@ -68,18 +83,20 @@ def main() -> None:
         with open(output_folder+"reg_sum_v.txt", "w") as f:
             f.write(summary.as_text())
 
+        x = data["time"].to_numpy()
+        X_pred = sm.add_constant(x)
+
+        pred = model.get_prediction(X_pred).predicted_mean
 
         ## create plot
         fig, ax= plt.subplots(nrows=2)
-        ax[0].scatter(
-            x=data["time"],
-            y=data["velocity(cm/s)"],
-        )
-        ax[0].set(xlabel = "T (s)", ylabel="V (cm/s)")
+        ax[0].errorbar(x=data["time"],y=data["velocity(m/s)"],yerr=data["err_v"],fmt="ok",capsize=5.0)
+        ax[0].plot(data["time"],pred)
+        ax[0].set(xlabel = "T (s)", ylabel="V (m/s)")
         ax[0].grid()
         ax[0].set_title("Ball speed")
         ax[1].scatter(x=data["time"],y=data["X"])
-        ax[1].set(xlabel = "T (s)", ylabel="X (cm)")
+        ax[1].set(xlabel = "T (s)", ylabel="X (m)")
         ax[1].grid()
         ax[1].set_title("Ball place")
         plt.tight_layout()

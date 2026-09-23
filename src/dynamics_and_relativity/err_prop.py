@@ -6,6 +6,11 @@ from sympy import Basic
 
 class Formula:
     def __init__(self,formula: str|sp.Expr, vars: list[str], consts: dict[str, float] | None) -> None:
+        """
+            Creert een formule object.
+            vars zijn de meetwaardes die per keer veranderen.
+            consts zijn de constanten die niet veranderen.
+        """
         self.symbols = {
             name : sp.Symbol(name)
             for name in list((consts or {}).keys()) + vars
@@ -25,6 +30,12 @@ class Formula:
 
 
     def get_error_expr(self, vars:list[str]|None = None) -> Formula:
+        """
+            Gebasseerd op de foutenleer reader:
+                sigma_f**2 = (df/dx*delta_x)**2 + (df/dy*delta_y)**2 ...etc
+            De functie neemt voor alle vars de partiele afgeleide keer de fout en doet dit in het kwadraad.
+            De partiele afgeleiden worden opgesomt en hiervan wordt het kwadraat genomen om sigma_f te krijgen.
+        """
         err_sqrd = 0
         delta_vars: dict[str,sp.Symbol] = {}
         variables = vars or self.vars
@@ -44,6 +55,7 @@ class Formula:
     def update_formula(self, new_str:str):
         self.formula = sp.parse_expr(new_str, local_dict=  self.symbols)
         self._formula_str = new_str
+
     def update_vars(self, vars:list[str]):
         self.vars = vars
         self.symbols = {
@@ -86,13 +98,6 @@ class Formula:
         values = func(*arrays)
 
         return pl.Series(result_name, values)
-
-
-
-
-
-
-
 
 
 if __name__ == "__main__":
