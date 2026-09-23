@@ -70,7 +70,7 @@ def main() -> None:
         time = data["time"].to_numpy()
         vel  = data["velocity(m/s)"].to_numpy()
         Time = sm.add_constant(time)
-        model = sm.WLS(vel, Time,weights=data["err_v"].to_numpy()).fit()
+        model = sm.WLS(vel, Time,weights=1/data["err_v"].to_numpy()**2).fit()
 
 
         # save model summary to file.
