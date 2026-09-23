@@ -20,13 +20,11 @@ def main() -> None:
         name_split = os.path.splitext(i.name)
         name = name_split[0]
         output_folder = f"./results week 2/meting {name}/"
-        #distance = float(input("Totale afstand(cm):"))
         os.makedirs(output_folder, exist_ok=True)
 
-        frame_rate = 400 # in Hz
+        frame_rate = 1200 # in Hz
         frames_skipped = 4
         shutter_speed = 33e-6 #1/1250 # in s
-        x_uncert = 0.0005 #in m
         delim = "\t"
         if "csv" in name_split[1]:
             delim = ","
@@ -83,15 +81,9 @@ def main() -> None:
         with open(output_folder+"reg_sum_v.txt", "w") as f:
             f.write(summary.as_text())
 
-        x = data["time"].to_numpy()
-        X_pred = sm.add_constant(x)
-
-        pred = model.get_prediction(X_pred).predicted_mean
-
         ## create plot
         fig, ax= plt.subplots(nrows=2)
         ax[0].errorbar(x=data["time"],y=data["velocity(m/s)"],yerr=data["err_v"],fmt="ok",capsize=5.0)
-        ax[0].plot(data["time"],pred)
         ax[0].set(xlabel = "T (s)", ylabel="V (m/s)")
         ax[0].grid()
         ax[0].set_title("Ball speed")
