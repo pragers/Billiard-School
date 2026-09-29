@@ -8,6 +8,7 @@ authors = [
 ]
 requires-python = ">=3.14"
 dependencies = [
+    "error-prop",
     "matplotlib>=3.11.2",
     "numpy>=2.5.3",
     "polars>=1.44.2",
@@ -16,6 +17,9 @@ dependencies = [
 ]
 [tool.uv]
 config-settings = { editable_mode = "compat" }
+
+[tool.uv.sources]
+error-prop = { git = "https://github.com/pragers/error_prop.git" }
 [project.scripts]
 dynamics-and-relativity = "dynamics_and_relativity:main"
 

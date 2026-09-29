@@ -78,6 +78,7 @@ name = "dynamics-and-relativity"
 version = "0.1.0"
 source = { editable = "." }
 dependencies = [
+    { name = "error-prop" },
     { name = "matplotlib" },
     { name = "numpy" },
     { name = "polars" },
@@ -87,11 +88,22 @@ dependencies = [
 
 [package.metadata]
 requires-dist = [
+    { name = "error-prop", git = "https://github.com/pragers/error_prop.git" },
     { name = "matplotlib", specifier = ">=3.11.2" },
     { name = "numpy", specifier = ">=2.5.3" },
     { name = "polars", specifier = ">=1.44.2" },
     { name = "statsmodels", specifier = ">=0.15.0" },
     { name = "sympy", specifier = ">=1.14.0" },
+]
+
+[[package]]
+name = "error-prop"
+version = "0.1.0"
+source = { git = "https://github.com/pragers/error_prop.git#7f658f8d842c631b68df4af96f17ca035df622c4" }
+dependencies = [
+    { name = "numpy" },
+    { name = "polars" },
+    { name = "sympy" },
 ]
 
 [[package]]
